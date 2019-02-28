@@ -14,7 +14,7 @@ public class ParserTest {
                 .build();
         parser.load();
         try {
-            parser.saveToJsonForMap("D:\\!!\\output.json");
+            parser.saveToJsonForMap("D:/!!/output1.json");
         } catch (IOException e) {
             e.printStackTrace();
         }

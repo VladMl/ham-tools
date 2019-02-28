@@ -269,6 +269,6 @@ public class EdiParser {
                     "\"],";
         }
         content = content.substring(0, content.length()-1)+"]}";
-        Files.write(Paths.get(filename), content.getBytes(), StandardOpenOption.WRITE);
+        Files.write(Paths.get(filename), content.getBytes(),  StandardOpenOption.CREATE, StandardOpenOption.WRITE);
       }
 }
