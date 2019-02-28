@@ -82,7 +82,7 @@ public class EdiParser {
 
     private String normalizeBand(String band) {
         String normalizedBand = "";
-        String freq = removeWitespace("a"+band)
+        String freq = removeWitespace(band)
                 .toUpperCase()
                 .replace("MHZ","")
                 .replace("GHZ","")
