@@ -255,7 +255,9 @@ public class EdiParser {
     }
 
     public void saveToJsonForMap(String filename) throws IOException {
-        String content = "{\"locator\":\""+report.getLocator()+"\", \"callsign\":\""+ report.getCallsign()+"\", \"qso\":[";
+        String content = "{\"locator\":\""+report.getLocator()+"\", " +
+                         "\"callsign\":\""+ report.getCallsign()+"\", "+
+                         "\"band\":\""+ report.getBand()+"\", \"qso\":[";
         for (QsoRecord qsoRecord: report.getQsoRecords()) {
             content += "[\""+new SimpleDateFormat("yyMMdd").format(qsoRecord.getDateTime())+"\", \""+new SimpleDateFormat("HHmm").format(qsoRecord.getDateTime())+
                     "\", \""+ qsoRecord.getCallsign() +
