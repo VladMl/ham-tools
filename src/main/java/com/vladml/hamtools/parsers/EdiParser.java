@@ -58,8 +58,7 @@ public class EdiParser {
         java.io.File file = new java.io.File(this.filename);
         String encoding = null;
         try {
-            return UniversalDetector.detectCharset(file);
-
+            encoding = UniversalDetector.detectCharset(file);
         } catch (IOException e) {
             e.printStackTrace();
         }
