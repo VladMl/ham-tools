@@ -225,7 +225,7 @@ public class EdiParser {
                     continue;
                 }
 
-                if (isBlank(line) || line.toUpperCase().contains("[END")) {
+                if (startQsoRecords && (isBlank(line) || line.toUpperCase().contains("[END"))) {
                     startQsoRecords = false;
                     break;
                 }
