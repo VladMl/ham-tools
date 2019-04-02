@@ -121,8 +121,12 @@ public class EdiParser {
     }
 
     private String[] normalizeQsoLine(String[] qsoLine) {
-        qsoLine[5] = String.format("%" + 3 + "s", qsoLine[5]);
-        qsoLine[7] = String.format("%" + 3 + "s", qsoLine[7]);
+        try {
+            qsoLine[5] = String.format("%0" + 3 + "d", Integer.parseInt(qsoLine[5]));
+            qsoLine[7] = String.format("%0" + 3 + "d", Integer.parseInt(qsoLine[7]));
+        } catch(Exception e) {
+
+        }
         return qsoLine;
     }
 

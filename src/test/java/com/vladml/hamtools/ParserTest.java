@@ -10,7 +10,7 @@ public class ParserTest {
     @Test
     public void ediParserTest() {
         EdiParser parser = EdiParser.builder()
-                .filename("d:\\!!\\UV2L1tur 144.edi")
+                .filename("d:\\!!\\2IT IU2AQS Aprile.edi")
                 .build();
         parser.load();
         try {
