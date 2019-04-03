@@ -53,6 +53,7 @@ public class EdiParser {
         return str.replaceAll("\\s", "");
     }
 
+    private boolean bulkLoad;
 
     private String getFileEncoding() {
         java.io.File file = new java.io.File(this.filename);
@@ -62,9 +63,7 @@ public class EdiParser {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        if (encoding != null) {
-            System.out.println("Detected encoding = " + encoding);
-        } else {
+        if (encoding == null) {
             System.out.println("No encoding detected.");
         }
         return "UTF-8";
@@ -154,11 +153,11 @@ public class EdiParser {
             errors.add(ReportConstants.EDI_INVALID_QSO_MODE + Optional.of(qsoLine[3]).orElse(""));
         if (isBlank(qsoLine[4]) || !qsoLine[4].matches(RST_REGEX))
             errors.add(ReportConstants.EDI_INVALID_QSO_SNT_RST + Optional.of(qsoLine[4]).orElse(""));
-        if (isBlank(qsoLine[5]) || !qsoLine[5].matches(NUM_REGEX))
+        if (!bulkLoad && (isBlank(qsoLine[5]) || !qsoLine[5].matches(NUM_REGEX)))
             errors.add(ReportConstants.EDI_INVALID_QSO_SNT_NUM + Optional.of(qsoLine[5]).orElse(""));
         if (isBlank(qsoLine[6]) || !qsoLine[6].matches(RST_REGEX))
             errors.add(ReportConstants.EDI_INVALID_QSO_RVD_RST + Optional.of(qsoLine[6]).orElse(""));
-        if (isBlank(qsoLine[7]) || !qsoLine[7].matches(NUM_REGEX))
+        if (!bulkLoad && (isBlank(qsoLine[7]) || !qsoLine[7].matches(NUM_REGEX)))
             errors.add(ReportConstants.EDI_INVALID_QSO_RVD_NUM + Optional.of(qsoLine[7]).orElse(""));
         if (isBlank(qsoLine[9]) || !qsoLine[9].matches(LOCATOR_REGEX))
             errors.add(ReportConstants.EDI_INVALID_QSO_RVD_LOCATOR + Optional.of(qsoLine[9]).orElse(""));
