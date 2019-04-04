@@ -207,8 +207,7 @@ public class EdiParser {
         boolean startQsoRecords = false;
         List<String> fileContent = new ArrayList<>();
 
-        try {
-            BufferedReader in = new BufferedReader(new InputStreamReader(new FileInputStream(this.filename), getFileEncoding()));
+        try (BufferedReader in = new BufferedReader(new InputStreamReader(new FileInputStream(this.filename), getFileEncoding()))) {
 
             String str;
             while ((str = in.readLine()) != null) {
