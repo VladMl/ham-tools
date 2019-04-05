@@ -23,7 +23,7 @@ import java.util.*;
 
 @Data
 @Builder
-public class EdiParser {
+public class EdiParser implements IParser {
 
 
     private static final String LOCATOR_REGEX = "^[A-R]{2}[0-9]{2}[A-X]{2}$";
