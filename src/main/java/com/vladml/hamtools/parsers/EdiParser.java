@@ -9,6 +9,7 @@ import com.vladml.hamtools.models.QsoRecord;
 import com.vladml.hamtools.models.Report;
 import lombok.Builder;
 import lombok.Data;
+import lombok.extern.slf4j.Slf4j;
 import org.mozilla.universalchardet.UniversalDetector;
 
 import java.io.*;
@@ -23,6 +24,7 @@ import java.util.*;
 
 @Data
 @Builder
+@Slf4j
 public class EdiParser implements IParser {
 
 
@@ -62,9 +64,6 @@ public class EdiParser implements IParser {
             encoding = UniversalDetector.detectCharset(file);
         } catch (IOException e) {
             e.printStackTrace();
-        }
-        if (encoding == null) {
-            System.out.println("No encoding detected.");
         }
         return "UTF-8";
     }

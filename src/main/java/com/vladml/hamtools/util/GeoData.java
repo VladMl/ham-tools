@@ -1,9 +1,13 @@
 package com.vladml.hamtools.util;
 
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+
+import static java.lang.Math.round;
 
 public class GeoData {
 
@@ -59,6 +63,44 @@ public class GeoData {
                 .map((v) -> v.getValue())
                 .collect(Collectors.toList());
         return (countryList.size() == 0) ? -1 : countryList.get(0);
+    }
+
+
+    private static int ord(String s) {
+        return s.length() > 0 ? (s.getBytes(StandardCharsets.UTF_8)[0] & 0xff) : 0;
+    }
+
+    private static int ord(char c) {
+        return c < 0x80 ? c : ord(Character.toString(c));
+    }
+
+    public static Coordinates locator2Coordinate(String locator) {
+        String loc = locator.toUpperCase();
+        double lat = (ord(loc.charAt(1)) - 65) * 10 + (ord(loc.charAt(3)) - 48) + (ord(loc.charAt(5)) - 65 + 0.5) / 24 - 90;
+        double lon = (ord(loc.charAt(0)) - 65) * 20 + (ord(loc.charAt(2)) - 48) * 2 + (ord(loc.charAt(4)) - 65 + 0.5) / 12 - 180;
+        return new Coordinates(lat,lon);
+    }
+
+    public static Integer distance(String locator1, String locator2) throws Exception {
+        Pattern r = Pattern.compile("^[A-R]{2}[0-9]{2}[A-X]{2}$");
+
+        if ( ! r.matcher(locator1).find())
+            throw new Exception("Wrong locator " + locator1);
+
+        if ( ! r.matcher(locator2).find())
+            throw new Exception("Wrong locator " + locator2);
+
+        Coordinates point1 = locator2Coordinate(locator1);
+        Coordinates point2 = locator2Coordinate(locator2);
+
+        if ((point1.latitude == point2.latitude) &&
+           (point1.longitude == point2.longitude))
+          return 0;
+
+        double distance = Math.sin(Math.toRadians(point1.latitude)) * Math.sin(Math.toRadians(point2.latitude)) +
+                Math.cos(Math.toRadians(point1.latitude)) * Math.cos(Math.toRadians(point2.latitude)) * Math.cos(Math.toRadians(point1.longitude - point2.longitude));
+
+        return Math.toIntExact(round((Math.toDegrees(Math.acos(distance)) * 60 * 1.1515) * 1.609344));
     }
 
 
