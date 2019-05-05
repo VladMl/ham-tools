@@ -35,6 +35,7 @@ public class EdiParser implements IParser {
     private static final String MODE_REGEX = "^[0-9]$";
     private static final String RST_REGEX = "^[0-9a-zA-Z]{2,3}";
     private static final String NUM_REGEX = "^[0-9]{1,4}$";
+    private static final String LINE_NUM = "{{ Line }} %s:";
 
 
     @Builder.Default
@@ -128,46 +129,46 @@ public class EdiParser implements IParser {
         return qsoLine;
     }
 
-    private boolean validateQsoLine(String[] qsoLine) {
+    private boolean validateQsoLine(String[] qsoLine, String lineLumber) {
         int errCount = errors.size();
         if (isBlank(qsoLine[0]) || !qsoLine[0].matches(DATE_REGEX))
-           errors.add(ReportConstants.EDI_INVALID_QSO_DATE + Optional.of(qsoLine[0]).orElse(""));
+           errors.add(LINE_NUM.format(lineLumber) + ReportConstants.EDI_INVALID_QSO_DATE + Optional.of(qsoLine[0]).orElse(""));
         try {
             new SimpleDateFormat("yyMMDD").parse(qsoLine[0]);
         } catch (ParseException e) {
-            errors.add(ReportConstants.EDI_INVALID_QSO_DATE + Optional.of(qsoLine[0]).orElse(""));
+            errors.add(LINE_NUM.format(lineLumber) + ReportConstants.EDI_INVALID_QSO_DATE + Optional.of(qsoLine[0]).orElse(""));
         }
 
         if (isBlank(qsoLine[1]) || !qsoLine[1].matches(TIME_REGEX))
-            errors.add(ReportConstants.EDI_INVALID_QSO_TIME + Optional.of(qsoLine[1]).orElse(""));
+            errors.add(LINE_NUM.format(lineLumber) + ReportConstants.EDI_INVALID_QSO_TIME + Optional.of(qsoLine[1]).orElse(""));
         try {
             new SimpleDateFormat("HHmm").parse(qsoLine[1]);
         } catch (ParseException e) {
-            errors.add(ReportConstants.EDI_INVALID_QSO_TIME + Optional.of(qsoLine[1]).orElse(""));
+            errors.add(LINE_NUM.format(lineLumber) + ReportConstants.EDI_INVALID_QSO_TIME + Optional.of(qsoLine[1]).orElse(""));
         }
 
         if (isBlank(qsoLine[2]) || !qsoLine[2].matches(CALLSIGN_REGEX))
-            errors.add(ReportConstants.EDI_INVALID_QSO_CALLSIGN + Optional.of(qsoLine[2]).orElse(""));
+            errors.add(LINE_NUM.format(lineLumber) + ReportConstants.EDI_INVALID_QSO_CALLSIGN + Optional.of(qsoLine[2]).orElse(""));
         if (isBlank(qsoLine[3]) || !qsoLine[3].matches(MODE_REGEX))
-            errors.add(ReportConstants.EDI_INVALID_QSO_MODE + Optional.of(qsoLine[3]).orElse(""));
+            errors.add(LINE_NUM.format(lineLumber) + ReportConstants.EDI_INVALID_QSO_MODE + Optional.of(qsoLine[3]).orElse(""));
         if (isBlank(qsoLine[4]) || !qsoLine[4].matches(RST_REGEX))
-            errors.add(ReportConstants.EDI_INVALID_QSO_SNT_RST + Optional.of(qsoLine[4]).orElse(""));
+            errors.add(LINE_NUM.format(lineLumber) + ReportConstants.EDI_INVALID_QSO_SNT_RST + Optional.of(qsoLine[4]).orElse(""));
         if (!bulkLoad && (isBlank(qsoLine[5]) || !qsoLine[5].matches(NUM_REGEX)))
-            errors.add(ReportConstants.EDI_INVALID_QSO_SNT_NUM + Optional.of(qsoLine[5]).orElse(""));
+            errors.add(LINE_NUM.format(lineLumber) + ReportConstants.EDI_INVALID_QSO_SNT_NUM + Optional.of(qsoLine[5]).orElse(""));
         if (isBlank(qsoLine[6]) || !qsoLine[6].matches(RST_REGEX))
-            errors.add(ReportConstants.EDI_INVALID_QSO_RVD_RST + Optional.of(qsoLine[6]).orElse(""));
+            errors.add(LINE_NUM.format(lineLumber) + ReportConstants.EDI_INVALID_QSO_RVD_RST + Optional.of(qsoLine[6]).orElse(""));
         if (!bulkLoad && (isBlank(qsoLine[7]) || !qsoLine[7].matches(NUM_REGEX)))
-            errors.add(ReportConstants.EDI_INVALID_QSO_RVD_NUM + Optional.of(qsoLine[7]).orElse(""));
+            errors.add(LINE_NUM.format(lineLumber) + ReportConstants.EDI_INVALID_QSO_RVD_NUM + Optional.of(qsoLine[7]).orElse(""));
         if (isBlank(qsoLine[9]) || !qsoLine[9].matches(LOCATOR_REGEX))
-            errors.add(ReportConstants.EDI_INVALID_QSO_RVD_LOCATOR + Optional.of(qsoLine[9]).orElse(""));
+            errors.add(LINE_NUM.format(lineLumber) + ReportConstants.EDI_INVALID_QSO_RVD_LOCATOR + Optional.of(qsoLine[9]).orElse(""));
         return errors.size() == errCount;
     }
 
 
-    private void loadQsoLine(String line) {
+    private void loadQsoLine(String line, String lineNumber) {
         try {
             String[] normalizedQsoLine = normalizeQsoLine(line.toUpperCase().split(";"));
-            if (validateQsoLine(normalizedQsoLine)) {
+            if (validateQsoLine(normalizedQsoLine, lineNumber)) {
                 qsoRecords.add(QsoRecord.create(normalizedQsoLine));
             }
         } catch (ParseException e) {
@@ -206,8 +207,11 @@ public class EdiParser implements IParser {
         boolean startQsoRecords = false;
         List<String> fileContent = new ArrayList<>();
 
+        int lineNum = 0;
+
         try (BufferedReader in = new BufferedReader(new InputStreamReader(new FileInputStream(this.filename), getFileEncoding()))) {
 
+            lineNum++;
             String str;
             while ((str = in.readLine()) != null) {
                 fileContent.add(str);
@@ -235,7 +239,7 @@ public class EdiParser implements IParser {
                     loadHeaderLine(line);
 
                 if (startQsoRecords)
-                    loadQsoLine(line);
+                    loadQsoLine(line, String.valueOf(lineNum));
             }
 
             report.setQsoRecords(qsoRecords);
