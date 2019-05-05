@@ -35,7 +35,7 @@ public class EdiParser implements IParser {
     private static final String MODE_REGEX = "^[0-9]$";
     private static final String RST_REGEX = "^[0-9a-zA-Z]{2,3}";
     private static final String NUM_REGEX = "^[0-9]{1,4}$";
-    private static final String LINE_NUM = "{{ Line }} %s:";
+    private static final String LINE_NUM = "{{ Line }} %s: ";
 
 
     @Builder.Default
@@ -211,13 +211,13 @@ public class EdiParser implements IParser {
 
         try (BufferedReader in = new BufferedReader(new InputStreamReader(new FileInputStream(this.filename), getFileEncoding()))) {
 
-            lineNum++;
             String str;
             while ((str = in.readLine()) != null) {
                 fileContent.add(str);
             }
 
             for (String line : fileContent) {
+                lineNum++;
                 if (line.toUpperCase().contains("[REG1TEST")) {
                     startHeader = true;
                     continue;
