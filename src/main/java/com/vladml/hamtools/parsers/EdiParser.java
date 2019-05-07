@@ -99,7 +99,7 @@ public class EdiParser implements IParser {
         else if (band.toUpperCase().contains("GHZ"))
             normalizedBand = freq + " GHZ";
         try {
-            if (Integer.parseInt(freq) > 100)
+            if (Double.parseDouble(freq.replace(',','.')) > 100)
                 normalizedBand = freq + " MHZ";
         } catch (Exception e) {
             errors.add(ReportConstants.EDI_INVALID_HDR_BAND+band);
