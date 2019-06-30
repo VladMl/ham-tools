@@ -26,7 +26,9 @@ public class ReportConstants {
     public static final String EDI_INVALID_QSO_RVD_RST = "{{ INVALID_QSO_RVD_RST }} : ";
     public static final String EDI_INVALID_QSO_RVD_NUM = "{{ INVALID_QSO_RVD_NUM }} : ";
     public static final String EDI_INVALID_QSO_RVD_LOCATOR = "{{ INVALID_QSO_RVD_LOC }} : ";
+    public static final String EDI_INVALID_QSO_FIELD_COUNT = "{{ EDI_INVALID_QSO_FIELD_COUNT }} : ";
     public static final String EDI_INVALID_QSO_UNKNOWN = "{{ INVALID_QSO_UNKNOWN }} : ";
 
+    public static final String EDI_INVALID_QSO_COUNT = "{{ INVALID_QSO_COUNT }} : ";
 
 }

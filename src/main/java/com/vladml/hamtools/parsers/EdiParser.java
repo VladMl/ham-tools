@@ -20,6 +20,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.*;
 
 @Data
@@ -70,11 +71,15 @@ public class EdiParser implements IParser {
     }
 
     private void extractDate(String date) {
-        String[] dates = removeWitespace(date).split(";");
-        if (dates.length == 2) {
-            report.setDateBegin(LocalDate.parse(dates[0], DateTimeFormatter.ofPattern("yyyyMMdd")));
-            report.setDateEnd(LocalDate.parse(dates[1], DateTimeFormatter.ofPattern("yyyyMMdd")));
-        } else
+          String[] dates = removeWitespace(date).split(";");
+          if (dates.length == 2) {
+              try {
+                  report.setDateBegin(LocalDate.parse(dates[0], DateTimeFormatter.ofPattern("yyyyMMdd")));
+                  report.setDateEnd(LocalDate.parse(dates[1], DateTimeFormatter.ofPattern("yyyyMMdd")));
+              } catch (DateTimeParseException e) {
+                  errors.add(ReportConstants.EDI_INVALID_HDR_DATE + date);
+              }
+          } else
             errors.add(ReportConstants.EDI_INVALID_HDR_DATE + date);
     }
 
@@ -115,7 +120,7 @@ public class EdiParser implements IParser {
         String[] tokens = headerLine.split("=");
         if (tokens.length > 1) {
             header.put(tokens[0].replaceAll("\\s+", "").toUpperCase(),
-                    tokens[1]);
+                    tokens[1].trim());
         }
     }
 
@@ -131,6 +136,12 @@ public class EdiParser implements IParser {
 
     private boolean validateQsoLine(String[] qsoLine, String lineLumber) {
         int errCount = errors.size();
+
+        if (qsoLine.length < 10) {
+            errors.add(String.format(LINE_NUM, lineLumber) + ReportConstants.EDI_INVALID_QSO_FIELD_COUNT);
+            return false;
+        }
+
         if (isBlank(qsoLine[0]) || !qsoLine[0].matches(DATE_REGEX))
            errors.add(String.format(LINE_NUM,lineLumber) + ReportConstants.EDI_INVALID_QSO_DATE + Optional.of(qsoLine[0]).orElse(""));
         try {
@@ -186,11 +197,11 @@ public class EdiParser implements IParser {
         else
             errors.add(ReportConstants.EDI_INVALID_HDR_DATE);
 
-        report.setCallsign(header.get(ReportConstants.EDI_HDR_CALL));
+        report.setCallsign(header.get(ReportConstants.EDI_HDR_CALL).toUpperCase());
         if (isBlank(report.getCallsign()))
             errors.add(ReportConstants.EDI_INVALID_HDR_CALLSIGN);
 
-        report.setLocator(header.get(ReportConstants.EDI_HDR_LOCATOR));
+        report.setLocator(header.get(ReportConstants.EDI_HDR_LOCATOR).toUpperCase());
         if (isBlank(report.getLocator()) || !report.getLocator().matches(LOCATOR_REGEX))
             errors.add(ReportConstants.EDI_INVALID_HDR_LOCATOR);
 
@@ -241,10 +252,12 @@ public class EdiParser implements IParser {
                 if (startQsoRecords)
                     loadQsoLine(line, String.valueOf(lineNum));
             }
-
-            report.setQsoRecords(qsoRecords);
+            if (qsoRecords.size() > 0)
+                report.setQsoRecords(qsoRecords);
+            else
+                errors.add(ReportConstants.EDI_INVALID_QSO_COUNT);
         } catch (IOException e) {
-            e.printStackTrace();
+            errors.add(e.getStackTrace().toString());
         }
 
     }
