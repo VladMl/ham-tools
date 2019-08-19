@@ -124,10 +124,27 @@ public class EdiParser implements IParser {
         }
     }
 
+    private String getModeFromReport(String[] qsoLine) {
+        if (isBlank(qsoLine[4]) || isBlank(qsoLine[4]))
+            return "";
+        else if  (qsoLine[4].length() == 2 && qsoLine[4].length() == 2) //SSB
+            return "1";
+        else if  (qsoLine[4].length() == 2 && qsoLine[4].length() == 3) //SSB CW
+            return "3";
+        else if  (qsoLine[4].length() == 3 && qsoLine[4].length() == 3) //CW
+            return "2";
+        else if  (qsoLine[4].length() == 3 && qsoLine[4].length() == 2) //CW SSB
+            return "4";
+        return "";
+    }
+
+
     private String[] normalizeQsoLine(String[] qsoLine) {
         try {
             qsoLine[5] = String.format("%0" + 3 + "d", Integer.parseInt(qsoLine[5]));
             qsoLine[7] = String.format("%0" + 3 + "d", Integer.parseInt(qsoLine[7]));
+            if (isBlank(qsoLine[3]))
+                 qsoLine[3] = getModeFromReport(qsoLine);
         } catch(Exception e) {
 
         }
@@ -150,6 +167,7 @@ public class EdiParser implements IParser {
             errors.add(String.format(LINE_NUM,lineLumber) + ReportConstants.EDI_INVALID_QSO_DATE + Optional.of(qsoLine[0]).orElse(""));
         }
 
+
         if (isBlank(qsoLine[1]) || !qsoLine[1].matches(TIME_REGEX))
             errors.add(String.format(LINE_NUM,lineLumber) + ReportConstants.EDI_INVALID_QSO_TIME + Optional.of(qsoLine[1]).orElse(""));
         try {
@@ -158,20 +176,23 @@ public class EdiParser implements IParser {
             errors.add(String.format(LINE_NUM,lineLumber) + ReportConstants.EDI_INVALID_QSO_TIME + Optional.of(qsoLine[1]).orElse(""));
         }
 
-        if (isBlank(qsoLine[2]) || !qsoLine[2].matches(CALLSIGN_REGEX))
-            errors.add(String.format(LINE_NUM,lineLumber) + ReportConstants.EDI_INVALID_QSO_CALLSIGN + Optional.of(qsoLine[2]).orElse(""));
-        if (isBlank(qsoLine[3]) || !qsoLine[3].matches(MODE_REGEX))
-            errors.add(String.format(LINE_NUM,lineLumber) + ReportConstants.EDI_INVALID_QSO_MODE + Optional.of(qsoLine[3]).orElse(""));
-        if (isBlank(qsoLine[4]) || !qsoLine[4].matches(RST_REGEX))
-            errors.add(String.format(LINE_NUM,lineLumber) + ReportConstants.EDI_INVALID_QSO_SNT_RST + Optional.of(qsoLine[4]).orElse(""));
-        if (!bulkLoad && (isBlank(qsoLine[5]) || !qsoLine[5].matches(NUM_REGEX)))
-            errors.add(String.format(LINE_NUM,lineLumber) + ReportConstants.EDI_INVALID_QSO_SNT_NUM + Optional.of(qsoLine[5]).orElse(""));
-        if (isBlank(qsoLine[6]) || !qsoLine[6].matches(RST_REGEX))
-            errors.add(String.format(LINE_NUM,lineLumber) + ReportConstants.EDI_INVALID_QSO_RVD_RST + Optional.of(qsoLine[6]).orElse(""));
-        if (!bulkLoad && (isBlank(qsoLine[7]) || !qsoLine[7].matches(NUM_REGEX)))
-            errors.add(String.format(LINE_NUM,lineLumber) + ReportConstants.EDI_INVALID_QSO_RVD_NUM + Optional.of(qsoLine[7]).orElse(""));
-        if (isBlank(qsoLine[9]) || !qsoLine[9].matches(LOCATOR_REGEX))
-            errors.add(String.format(LINE_NUM,lineLumber) + ReportConstants.EDI_INVALID_QSO_RVD_LOCATOR + Optional.of(qsoLine[9]).orElse(""));
+        if (!bulkLoad) {
+            if (isBlank(qsoLine[2]) || !qsoLine[2].matches(CALLSIGN_REGEX))
+                errors.add(String.format(LINE_NUM, lineLumber) + ReportConstants.EDI_INVALID_QSO_CALLSIGN + Optional.of(qsoLine[2]).orElse(""));
+            if (isBlank(qsoLine[3]) || !qsoLine[3].matches(MODE_REGEX))
+                errors.add(String.format(LINE_NUM, lineLumber) + ReportConstants.EDI_INVALID_QSO_MODE + Optional.of(qsoLine[3]).orElse(""));
+            if (isBlank(qsoLine[4]) || !qsoLine[4].matches(RST_REGEX))
+                errors.add(String.format(LINE_NUM, lineLumber) + ReportConstants.EDI_INVALID_QSO_SNT_RST + Optional.of(qsoLine[4]).orElse(""));
+            if (isBlank(qsoLine[5]) || !qsoLine[5].matches(NUM_REGEX))
+                errors.add(String.format(LINE_NUM, lineLumber) + ReportConstants.EDI_INVALID_QSO_SNT_NUM + Optional.of(qsoLine[5]).orElse(""));
+            if (isBlank(qsoLine[6]) || !qsoLine[6].matches(RST_REGEX))
+                errors.add(String.format(LINE_NUM, lineLumber) + ReportConstants.EDI_INVALID_QSO_RVD_RST + Optional.of(qsoLine[6]).orElse(""));
+            if (isBlank(qsoLine[7]) || !qsoLine[7].matches(NUM_REGEX))
+                errors.add(String.format(LINE_NUM, lineLumber) + ReportConstants.EDI_INVALID_QSO_RVD_NUM + Optional.of(qsoLine[7]).orElse(""));
+            if (isBlank(qsoLine[9]) || !qsoLine[9].matches(LOCATOR_REGEX))
+                errors.add(String.format(LINE_NUM, lineLumber) + ReportConstants.EDI_INVALID_QSO_RVD_LOCATOR + Optional.of(qsoLine[9]).orElse(""));
+        }
+
         return errors.size() == errCount;
     }
 
