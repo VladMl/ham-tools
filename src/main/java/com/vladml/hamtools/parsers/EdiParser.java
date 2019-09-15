@@ -80,7 +80,8 @@ public class EdiParser implements IParser {
                   errors.add(ReportConstants.EDI_INVALID_HDR_DATE + date);
               }
           } else
-            errors.add(ReportConstants.EDI_INVALID_HDR_DATE + date);
+              if (!bulkLoad)
+                  errors.add(ReportConstants.EDI_INVALID_HDR_DATE + date);
     }
 
     private String normalizeBand(String band) {
