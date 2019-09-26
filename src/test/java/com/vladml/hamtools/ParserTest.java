@@ -19,6 +19,7 @@ public class ParserTest {
                 .build();
 
         parser.load();
+        System.out.println(parser.getReport().getCallsign());
         assertThat(parser.getErrors().size(), is(0));
         try {
             parser.saveToJsonForMap("D:/!!/output1.json");

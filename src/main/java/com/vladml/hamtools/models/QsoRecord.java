@@ -28,6 +28,10 @@ public class QsoRecord {
 
     private String locator;
 
+    public void setCallsign(String callsign) {
+        this.callsign = (callsign.contains("\\")) ? callsign.replace("\\", "/") : callsign;
+    }
+
 
     public static QsoRecord create(String[] qsoLine) throws ParseException {
         Date qsoDateTime = new SimpleDateFormat("yyMMddHHmm").parse(qsoLine[0]+qsoLine[1]);

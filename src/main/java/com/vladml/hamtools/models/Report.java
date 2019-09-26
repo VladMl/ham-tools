@@ -30,6 +30,10 @@ public class Report {
 
     private String operatorCallsign;
 
+    public void setCallsign(String callsign) {
+        this.callsign = (callsign.contains("\\")) ? callsign.replace("\\", "/") : callsign;
+    }
+
     @Builder.Default
     private List<QsoRecord> qsoRecords = new ArrayList<>();
 
