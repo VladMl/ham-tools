@@ -149,6 +149,7 @@ public class EdiParser implements IParser {
         } catch(Exception e) {
 
         }
+
         return qsoLine;
     }
 
@@ -200,7 +201,7 @@ public class EdiParser implements IParser {
 
     private void loadQsoLine(String line, String lineNumber) {
         try {
-            String[] normalizedQsoLine = normalizeQsoLine(line.toUpperCase().split(";"));
+            String[] normalizedQsoLine = normalizeQsoLine(line.replaceAll("\\s+","").toUpperCase().split(";"));
             if (validateQsoLine(normalizedQsoLine, lineNumber)) {
                 qsoRecords.add(QsoRecord.create(normalizedQsoLine));
             }
