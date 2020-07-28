@@ -228,10 +228,11 @@ public class EdiParser implements IParser {
         if (isBlank(report.getLocator()) || !report.getLocator().matches(LOCATOR_REGEX))
             errors.add(ReportConstants.EDI_INVALID_HDR_LOCATOR);
 
-        if (isBlank(report.getBand()))
+        String pband = header.get(ReportConstants.EDI_HDR_BAND);
+        if (isBlank(pband))
             errors.add(ReportConstants.EDI_INVALID_HDR_BAND);
         else
-            report.setBand(normalizeBand(header.get(ReportConstants.EDI_HDR_BAND)));
+            report.setBand(normalizeBand(pband));
 
         report.setEmail(header.get(ReportConstants.EDI_HDR_EMAIL));
     }
