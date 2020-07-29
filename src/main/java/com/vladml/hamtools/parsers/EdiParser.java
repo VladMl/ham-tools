@@ -80,6 +80,13 @@ public class EdiParser implements IParser {
                   errors.add(ReportConstants.EDI_INVALID_HDR_DATE + date);
               }
           } else
+          if (dates.length == 1) {
+              try {
+                  report.setDateBegin(LocalDate.parse(dates[0], DateTimeFormatter.ofPattern("yyyyMMdd")));
+              } catch (DateTimeParseException e) {
+                  errors.add(ReportConstants.EDI_INVALID_HDR_DATE + date);
+              }
+          } else
               if (!bulkLoad)
                   errors.add(ReportConstants.EDI_INVALID_HDR_DATE + date);
     }
