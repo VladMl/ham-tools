@@ -11,6 +11,7 @@ import java.util.Date;
 @Builder
 public class QsoRecord {
 
+    private int lineNumber;
 
     private Date dateTime;
 
@@ -33,7 +34,7 @@ public class QsoRecord {
     }
 
 
-    public static QsoRecord create(String[] qsoLine) throws ParseException {
+    public static QsoRecord create(String[] qsoLine, int lineNumber) throws ParseException {
         Date qsoDateTime = new SimpleDateFormat("yyMMddHHmm").parse(qsoLine[0]+qsoLine[1]);
         return QsoRecord.builder()
                 .dateTime(qsoDateTime)
@@ -44,6 +45,7 @@ public class QsoRecord {
                 .rstRcvd(qsoLine[6])
                 .numRcvd(qsoLine[7])
                 .locator(qsoLine[9])
+                .lineNumber(lineNumber)
                 .build();
     }
 

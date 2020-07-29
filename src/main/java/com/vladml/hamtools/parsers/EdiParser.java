@@ -36,7 +36,7 @@ public class EdiParser implements IParser {
     private static final String MODE_REGEX = "^[0-9]$";
     private static final String RST_REGEX = "^[0-9a-zA-Z]{2,3}";
     private static final String NUM_REGEX = "^[0-9]{1,4}$";
-    private static final String LINE_NUM = "{{ Line }} %s: ";
+    private static final String LINE_NUM = "{{ Line }} %d: ";
 
 
     @Builder.Default
@@ -153,7 +153,7 @@ public class EdiParser implements IParser {
         return qsoLine;
     }
 
-    private boolean validateQsoLine(String[] qsoLine, String lineLumber) {
+    private boolean validateQsoLine(String[] qsoLine, int lineLumber) {
         int errCount = errors.size();
 
         if (qsoLine.length < 10) {
@@ -199,11 +199,11 @@ public class EdiParser implements IParser {
     }
 
 
-    private void loadQsoLine(String line, String lineNumber) {
+    private void loadQsoLine(String line, int lineNumber) {
         try {
             String[] normalizedQsoLine = normalizeQsoLine(line.replaceAll("\\s+","").toUpperCase().split(";"));
             if (validateQsoLine(normalizedQsoLine, lineNumber)) {
-                qsoRecords.add(QsoRecord.create(normalizedQsoLine));
+                qsoRecords.add(QsoRecord.create(normalizedQsoLine, lineNumber));
             }
         } catch (ParseException e) {
             e.printStackTrace();
@@ -275,7 +275,7 @@ public class EdiParser implements IParser {
                     loadHeaderLine(line);
 
                 if (startQsoRecords)
-                    loadQsoLine(line, String.valueOf(lineNum));
+                    loadQsoLine(line, lineNum);
             }
             if (qsoRecords.size() > 0)
                 report.setQsoRecords(qsoRecords);
