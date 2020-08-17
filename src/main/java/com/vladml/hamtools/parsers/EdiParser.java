@@ -227,8 +227,10 @@ public class EdiParser implements IParser {
         else
             errors.add(ReportConstants.EDI_INVALID_HDR_DATE);
 
-        report.setCallsign(header.get(ReportConstants.EDI_HDR_CALL).toUpperCase());
-        if (isBlank(report.getCallsign()))
+
+        if (!isBlank(header.get(ReportConstants.EDI_HDR_CALL)))
+            report.setCallsign(header.get(ReportConstants.EDI_HDR_CALL).toUpperCase());
+        else
             errors.add(ReportConstants.EDI_INVALID_HDR_CALLSIGN);
 
         report.setLocator(header.get(ReportConstants.EDI_HDR_LOCATOR).toUpperCase());
