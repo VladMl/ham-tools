@@ -233,9 +233,10 @@ public class EdiParser implements IParser {
         else
             errors.add(ReportConstants.EDI_INVALID_HDR_CALLSIGN);
 
-        report.setLocator(header.get(ReportConstants.EDI_HDR_LOCATOR).toUpperCase());
-        if (isBlank(report.getLocator()) || !report.getLocator().matches(LOCATOR_REGEX))
+        if (isBlank(header.get(ReportConstants.EDI_HDR_LOCATOR)) || !header.get(ReportConstants.EDI_HDR_LOCATOR).matches(LOCATOR_REGEX))
             errors.add(ReportConstants.EDI_INVALID_HDR_LOCATOR);
+        else
+            report.setLocator(header.get(ReportConstants.EDI_HDR_LOCATOR).toUpperCase());
 
         String pband = header.get(ReportConstants.EDI_HDR_BAND);
         if (isBlank(pband))
