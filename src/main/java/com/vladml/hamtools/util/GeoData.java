@@ -48,12 +48,14 @@ public class GeoData {
         map.put("^SV.*|SX.*|SZ.*$", 236);
         map.put("^HB.*$", 287);
         map.put("^P[A-H].*$", 263);
-        map.put("^G[0-9].*|GW.*$", 223);
+        map.put("^G[0-9].*|G.*$", 223);
         map.put("^5B.*$", 215);
         map.put("^9H.*$", 257);
         map.put("^4Z.*|4X.*$", 336);
         map.put("^OD.*|OD.*$", 354);
         map.put("^A4.*$", 370);
+        map.put("^TA.*|YM.*|TC.*$", 390);
+
         return map;
     }
 
