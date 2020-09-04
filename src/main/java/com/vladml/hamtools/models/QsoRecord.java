@@ -35,10 +35,12 @@ public class QsoRecord {
 
 
     public static QsoRecord create(String[] qsoLine, int lineNumber) throws ParseException {
+        String callsign = qsoLine[2];
+        callsign = (callsign.contains("\\")) ? callsign.replace("\\", "/") : callsign;
         Date qsoDateTime = new SimpleDateFormat("yyMMddHHmm").parse(qsoLine[0]+qsoLine[1]);
         return QsoRecord.builder()
                 .dateTime(qsoDateTime)
-                .callsign(qsoLine[2])
+                .callsign(callsign)
                 .mode(Integer.parseInt(qsoLine[3]))
                 .rstSent(qsoLine[4])
                 .numSent(qsoLine[5])
