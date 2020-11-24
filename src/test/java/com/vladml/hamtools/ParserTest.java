@@ -7,10 +7,15 @@ import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
 
 
+import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.List;
 
 public class ParserTest {
-
+/*
     @Test
     public void ediParserTest() {
         EdiParser parser = EdiParser.builder()
@@ -28,4 +33,27 @@ public class ParserTest {
         }
 
     }
+ */
+    @Test
+    public void badLocatorTest() {
+
+        Path resourceDirectory = Paths.get("src","test","resources");
+        String absolutePath = resourceDirectory.toFile().getAbsolutePath();
+
+        System.out.println(absolutePath);
+
+
+        EdiParser parser = EdiParser.builder()
+                .filename(absolutePath + "\\edi\\bad_locator.edi")
+                .bulkLoad(false)
+                .build();
+        parser.load();
+
+
+        List<String> errors =  parser.getErrors();
+
+
+    }
+
+
 }

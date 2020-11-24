@@ -9,6 +9,8 @@ public class ReportConstants {
     public static final String EDI_HDR_EMAIL = "RHBBS";
     public static final String EDI_HDR_OPERATOR_NAME = "RNAME";
     public static final String EDI_HDR_OPERATOR_CALLSIGN = "RCALL";
+    public static final String EDI_HDR_OPERATOR_1 = "MOPE1";
+    public static final String EDI_HDR_OPERATOR_2 = "MOPE2";
 
 
 

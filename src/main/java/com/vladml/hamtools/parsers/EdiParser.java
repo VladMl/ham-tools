@@ -245,6 +245,11 @@ public class EdiParser implements IParser {
             report.setBand(normalizeBand(pband));
 
         report.setEmail(header.get(ReportConstants.EDI_HDR_EMAIL));
+        report.setOperatorName(header.get(ReportConstants.EDI_HDR_OPERATOR_NAME));
+        report.setOperatorCallsign(header.get(ReportConstants.EDI_HDR_OPERATOR_CALLSIGN));
+        report.setOperator1(header.get(ReportConstants.EDI_HDR_OPERATOR_1));
+        report.setOperator2(header.get(ReportConstants.EDI_HDR_OPERATOR_2));
+
     }
 
     public void load() {

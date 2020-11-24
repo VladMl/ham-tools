@@ -30,6 +30,11 @@ public class Report {
 
     private String operatorCallsign;
 
+    private String operator1;
+
+    private String operator2;
+
+
     public void setCallsign(String callsign) {
         this.callsign = (callsign.contains("\\")) ? callsign.replace("\\", "/") : callsign;
     }
