@@ -67,7 +67,10 @@ public class EdiParser implements IParser {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return "UTF-8";
+        if (encoding != null)
+            return encoding;
+        else
+            return "UTF-8";
     }
 
     private void extractDate(String date) {
@@ -259,7 +262,6 @@ public class EdiParser implements IParser {
         List<String> fileContent = new ArrayList<>();
 
         int lineNum = 0;
-
         try (BufferedReader in = new BufferedReader(new InputStreamReader(new FileInputStream(this.filename), getFileEncoding()))) {
 
             String str;
