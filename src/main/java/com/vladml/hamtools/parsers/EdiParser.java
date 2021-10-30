@@ -254,7 +254,6 @@ public class EdiParser implements IParser {
         report.setOperator2(header.get(ReportConstants.EDI_HDR_OPERATOR_2));
 
     }
-
     public void load() {
 
         boolean startHeader = false;
